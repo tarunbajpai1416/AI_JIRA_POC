@@ -12,7 +12,7 @@ $(document).ready(function() {
                     const story = res.story;
                     $('#storyIdDisplay').text(story.id);
                     $('#storySummary').text(story.summary);
-                    $('#storyDescription').text(story.description);
+                    $('#storyDescription').html(res.story.description);
                     $('#storyDetails').show();
                     // Generate test cases
                     $.ajax({
@@ -36,6 +36,49 @@ $(document).ready(function() {
                 } else {
                     alert('Failed to fetch story');
                 }
+            }
+        });
+    });
+
+    $('#createZephyrBtn').click(function() {
+        const storyId = $('#storyIdDisplay').text();
+        const testCases = [];
+        $('#testCasesTable tbody tr').each(function() {
+            const id = $(this).find('td').eq(0).text();
+            const description = $(this).find('td').eq(1).text();
+            testCases.push({ id, description });
+        });
+        
+        $('#zephyrMsg').text('Creating test cases in Zephyr Scale...').removeClass('text-success text-danger').addClass('text-info');
+        $('#createdTestCases').empty(); // Clear previous results
+
+        $.ajax({
+            url: '/create_zephyr_tests_ui',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                story_key: storyId, 
+                test_cases: testCases,
+                project_id: 10000  // Default Zephyr project ID - you can make this configurable
+            }),
+            success: function(res) {
+                if (res.success) {
+                    $('#zephyrMsg').text(res.message).removeClass('text-info text-danger').addClass('text-success');
+                    
+                    if (res.created_keys && res.created_keys.length > 0) {
+                        const list = $('<ul>').addClass('list-group mt-2');
+                        res.created_keys.forEach(key => {
+                            list.append($('<li>').addClass('list-group-item').text(key));
+                        });
+                        $('#createdTestCases').html('<strong>Created Test Cases:</strong>').append(list);
+                    }
+
+                } else {
+                    $('#zephyrMsg').text(res.message || 'Failed to create test cases in Zephyr Scale').removeClass('text-info text-success').addClass('text-danger');
+                }
+            },
+            error: function() {
+                $('#zephyrMsg').text('Error connecting to Zephyr Scale').removeClass('text-info text-success').addClass('text-danger');
             }
         });
     });

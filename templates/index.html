@@ -18,7 +18,10 @@
         <h4>Story Details</h4>
         <p><strong>ID:</strong> <span id="storyIdDisplay"></span></p>
         <p><strong>Summary:</strong> <span id="storySummary"></span></p>
-        <p><strong>Description:</strong> <span id="storyDescription"></span></p>
+        <div class="mb-3">
+            <strong>Description:</strong>
+            <div id="storyDescription" class="mt-2" style="white-space: pre-wrap; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f8f9fa;"></div>
+        </div>
     </div>
     <div id="testCasesSection" style="display:none;">
         <h4>Generated Unit Test Cases</h4>
@@ -31,8 +34,13 @@
             </thead>
             <tbody></tbody>
         </table>
-        <button id="publishBtn" class="btn btn-success">Publish as CSV to JIRA</button>
+        <div class="d-flex gap-2">
+            <button id="createZephyrBtn" class="btn btn-primary">Create Test Cases in Zephyr</button>
+            <button id="publishBtn" class="btn btn-success">Publish as CSV to JIRA</button>
+        </div>
         <div id="publishMsg" class="mt-2"></div>
+        <div id="zephyrMsg" class="mt-2"></div>
+        <div id="createdTestCases" class="mt-2"></div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
